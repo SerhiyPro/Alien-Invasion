@@ -1,5 +1,6 @@
 import sys
 import pygame
+import time
 
 from bullet import Bullet
 
@@ -24,13 +25,14 @@ def check_keydown_events(event, ai_settings, screen, ship, bullets):
     elif event.key == pygame.K_LEFT:
         ship.moving_left = True
     elif event.key == pygame.K_SPACE:
-        fire_bullet(ai_settings, screen, ship, bullets)
+        ship.shooting = True
 
 
 def fire_bullet(ai_settings, screen, ship, bullets):
     """Create a new bullet and add it to the bullets group"""
-    new_bullet = Bullet(ai_settings, screen, ship)
-    bullets.add(new_bullet)
+    if not bullets.sprites() or (time.time() - bullets.sprites()[-1].time) >= 0.1:
+        new_bullet = Bullet(ai_settings, screen, ship)
+        bullets.add(new_bullet)
 
 
 def check_keyup_events(event, ship):
@@ -38,6 +40,8 @@ def check_keyup_events(event, ship):
         ship.moving_right = False
     elif event.key == pygame.K_LEFT:
         ship.moving_left = False
+    elif event.key == pygame.K_SPACE:
+        ship.shooting = False
 
 
 def update_bullets(bullets):
@@ -54,6 +58,9 @@ def update_screen(ai_settings, screen, ship, bullets):
     """Update images on the screen and flip to the new screen"""
     # Redraw the screen during each pass through the loop
     screen.fill(ai_settings.bg_color)
+
+    if ship.shooting:
+        fire_bullet(ai_settings, screen, ship, bullets)
 
     # Redraw all bullets behind ship and aliens
     for bullet in bullets.sprites():

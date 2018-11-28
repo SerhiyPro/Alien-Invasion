@@ -24,6 +24,9 @@ class Ship:
         self.moving_right = False
         self.moving_left = False
 
+        # Used for continious shooting
+        self.shooting = False
+
     def update(self):
         """Update the ship's position based on the movement flag"""
         # Update the ship's center value, not the rect
