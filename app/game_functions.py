@@ -54,7 +54,7 @@ def update_bullets(ai_settings, screen, ship, aliens, bullets):
 
     for bullet in bullets.copy():
         if bullet.rect.bottom <= 0:
-            bullets.remove()
+            bullets.remove(bullet)
 
     check_bullet_alien_collision(ai_settings, screen, ship, aliens, bullets)
 
@@ -163,7 +163,7 @@ def update_screen(ai_settings, screen, ship,  aliens, bullets):
     # Redraw the screen during each pass through the loop
     screen.fill(ai_settings.bg_color)
 
-    if ship.shooting:
+    if ship.shooting and len(bullets.sprites()) < ai_settings.bullets_allowed:
         fire_bullet(ai_settings, screen, ship, bullets)
 
     # Redraw all bullets behind ship and aliens
