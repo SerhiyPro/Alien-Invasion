@@ -57,29 +57,41 @@ def update_bullets(bullets):
             bullets.remove(bullet)
 
 
-def get_number_aliens_x(ai_settings, alien_width):
+def get_number_rows(ai_settings, ship_height, alien_height):
+    """Determine the number of rows of aliens that fit on the screen"""
+    available_space_y = (ai_settings.screen_height -
+                         (3 * alien_height) - ship_height)
+    number_of_rows = available_space_y // (2 * alien_height)
+    return number_of_rows
+
+
+def get_number_aliens_per_line(ai_settings, alien_width):
     """Determine the number of aliens that fir in a row"""
     available_space_x = ai_settings.screen_width - 2 * alien_width
     number_aliens_x = available_space_x // (2 * alien_width)
     return number_aliens_x
 
 
-def create_alien(ai_settings, screen, aliens, alien_number):
+def create_alien(ai_settings, screen, aliens, alien_number, row_number):
     """Create an alien and place it in a row"""
     alien = Alien(ai_settings, screen)
     alien_width = alien.rect.width
     alien.x = alien_width + 2 * alien_width * alien_number
     alien.rect.x = alien.x
+    alien.rect.y = alien.rect.height + 2 * alien.rect.height * row_number
     aliens.add(alien)
 
 
-def create_fleet(ai_settings, screen, aliens):
-    """Create a full flit of aliens"""
+def create_fleet(ai_settings, screen, ship, aliens):
+    """Create a fleet flit of aliens"""
     alien = Alien(ai_settings, screen)
-    number_aliens_x = get_number_aliens_x(ai_settings, alien.rect.width)
+    number_aliens_x = get_number_aliens_per_line(ai_settings, alien.rect.width)
+    number_rows = get_number_rows(ai_settings, ship.rect.height,
+                                  alien.rect.height)
 
-    for alien_number in range(number_aliens_x):
-        create_alien(ai_settings, screen, aliens, alien_number)
+    for row_number in range(number_rows):
+        for alien_number in range(number_aliens_x):
+            create_alien(ai_settings, screen, aliens, alien_number, row_number)
 
 
 def update_screen(ai_settings, screen, ship,  aliens, bullets):
