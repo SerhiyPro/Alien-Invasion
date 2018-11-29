@@ -13,13 +13,13 @@ def check_events(ai_settings, screen, ship, bullets):
             sys.exit()
 
         elif event.type == pygame.KEYDOWN:
-            check_keydown_events(event, ai_settings, screen, ship, bullets)
+            check_keydown_events(event, ship)
 
         elif event.type == pygame.KEYUP:
             check_keyup_events(event, ship)
 
 
-def check_keydown_events(event, ai_settings, screen, ship, bullets):
+def check_keydown_events(event, ship):
     """Respond to keypress"""
     if event.key == pygame.K_RIGHT:
         ship.moving_right = True
@@ -32,6 +32,7 @@ def check_keydown_events(event, ai_settings, screen, ship, bullets):
 
 
 def check_keyup_events(event, ship):
+    """Respond to key releases"""
     if event.key == pygame.K_RIGHT:
         ship.moving_right = False
     elif event.key == pygame.K_LEFT:
@@ -48,32 +49,37 @@ def fire_bullet(ai_settings, screen, ship, bullets):
 
 
 def update_bullets(bullets):
-    """Update position of bullets and get rid of all bullets"""
+    """Update position of bullets and get rid of odd bullets"""
     bullets.update()
 
-    # Get rid of bullets that have disappeared
     for bullet in bullets.copy():
         if bullet.rect.bottom <= 0:
             bullets.remove(bullet)
 
 
-def create_fleet(ai_settings, screen, aliens):
-    """
-    Create a full flit of aliens
-    Create an alien and find the number of aliens in a row
-    """
-    alien = Alien(ai_settings, screen)
-    alien_width = alien.rect.width
+def get_number_aliens_x(ai_settings, alien_width):
+    """Determine the number of aliens that fir in a row"""
     available_space_x = ai_settings.screen_width - 2 * alien_width
     number_aliens_x = available_space_x // (2 * alien_width)
+    return number_aliens_x
 
-    # Create the first row of aliens
+
+def create_alien(ai_settings, screen, aliens, alien_number):
+    """Create an alien and place it in a row"""
+    alien = Alien(ai_settings, screen)
+    alien_width = alien.rect.width
+    alien.x = alien_width + 2 * alien_width * alien_number
+    alien.rect.x = alien.x
+    aliens.add(alien)
+
+
+def create_fleet(ai_settings, screen, aliens):
+    """Create a full flit of aliens"""
+    alien = Alien(ai_settings, screen)
+    number_aliens_x = get_number_aliens_x(ai_settings, alien.rect.width)
+
     for alien_number in range(number_aliens_x):
-        # Create an alien and place it in the row
-        alien = Alien(ai_settings, screen)
-        alien.x = alien_width + 2 * alien_width * alien_number
-        alien.rect.x = alien.x
-        aliens.add(alien)
+        create_alien(ai_settings, screen, aliens, alien_number)
 
 
 def update_screen(ai_settings, screen, ship,  aliens, bullets):
