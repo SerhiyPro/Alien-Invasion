@@ -28,6 +28,10 @@ class Ship:
         # Used for continious shooting
         self.shooting = False
 
+    def center_ship(self):
+        """Center the ship on the screen"""
+        self.center = self.screen_rect.centerx
+
     def update(self):
         """Update the ship's position based on the movement flag"""
         # Update the ship's center value, not the rect
