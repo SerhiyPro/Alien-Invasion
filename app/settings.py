@@ -9,6 +9,10 @@ class Settings:
 
         self.ship_speed_factor = 1.5
         self.alien_speed_factor = 1
+        self.fleet_drop_speed = 10
+
+        # fleet direction (1 for right, -1 for left)
+        self.fleet_direction = 1
 
         self.bullet_speed_factor = 1
         self.bullet_width = 3
