@@ -22,6 +22,11 @@ class Alien(Sprite):
         # Store the alien's exact position
         self.x = float(self.rect.x)
 
+    def update(self):
+        """Move the alien to the right"""
+        self.x += self.ai_settings.alien_speed_factor
+        self.rect.x = self.x
+
     def blitme(self):
         """Draw the alien at its current position"""
         self.screen.blit(self.image, self.rect)
