@@ -65,6 +65,13 @@ def check_keyup_events(event, ship):
         ship.shooting = False
 
 
+def check_high_score(stats, sb):
+    """Check to see if there's a new high score"""
+    if stats.score > stats.high_score:
+        stats.high_score = stats.score
+        sb.prep_high_score()
+
+
 def fire_bullet(ai_settings, screen, ship, bullets):
     """Create a new bullet and add it to the bullets group"""
     if not bullets.sprites() or (time.time() - bullets.sprites()[-1].time) >= 0.1:
@@ -88,8 +95,10 @@ def check_bullet_alien_collision(ai_settings, screen, stats, sb, ship, aliens, b
     collisions = pygame.sprite.groupcollide(bullets, aliens, True, True)
 
     if collisions:
-        stats.score += ai_settings.alien_points
-        sb.prep_score()
+        for aliens in collisions.values():
+            stats.score += ai_settings.alien_points * len(aliens)
+            sb.prep_score()
+        check_high_score(stats, sb)
 
     if len(aliens) == 0:
         bullets.empty()
