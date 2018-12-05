@@ -1,19 +1,21 @@
 import sys
 import pygame
 import time
+import json
 
 from bullet import Bullet
 from alien import Alien
+from score import Score
 
 
-def check_events(ai_settings, screen, stats, sb,  play_button, ship, aliens,  bullets):
+def check_events(ai_settings, screen, stats, sb, play_button, ship, aliens, bullets):
     """Respond to keypresses and mouse events"""
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
-            sys.exit()
+            quit_game(stats)
 
         elif event.type == pygame.KEYDOWN:
-            check_keydown_events(event, ship)
+            check_keydown_events(event, ship, stats)
 
         elif event.type == pygame.KEYUP:
             check_keyup_events(event, ship)
@@ -21,6 +23,12 @@ def check_events(ai_settings, screen, stats, sb,  play_button, ship, aliens,  bu
         elif event.type == pygame.MOUSEBUTTONDOWN:
             mouse_x, mouse_y = pygame.mouse.get_pos()
             check_play_button(ai_settings, screen, stats, sb, play_button, ship, aliens, bullets, mouse_x, mouse_y)
+
+
+def quit_game(stats):
+    score = Score()
+    score.set_score(stats)
+    sys.exit()
 
 
 def check_play_button(ai_settings, screen, stats, sb, play_button, ship, aliens, bullets, mouse_x, mouse_y):
@@ -49,7 +57,7 @@ def check_play_button(ai_settings, screen, stats, sb, play_button, ship, aliens,
         ship.center_ship()
 
 
-def check_keydown_events(event, ship):
+def check_keydown_events(event, ship, stats):
     """Respond to keypress"""
     if event.key == pygame.K_RIGHT:
         ship.moving_right = True
@@ -58,7 +66,7 @@ def check_keydown_events(event, ship):
     elif event.key == pygame.K_SPACE:
         ship.shooting = True
     elif event.key == pygame.K_q or event.key == pygame.K_ESCAPE:
-        sys.exit()
+        quit_game(stats)
 
 
 def check_keyup_events(event, ship):
@@ -72,7 +80,7 @@ def check_keyup_events(event, ship):
 
 
 def check_high_score(stats, sb):
-    """Check to see if there's a new high score"""
+    """Check to see if there's a new high scores"""
     if stats.score > stats.high_score:
         stats.high_score = stats.score
         sb.prep_high_score()
@@ -181,7 +189,7 @@ def ship_hit(ai_settings, screen, stats, sb, ship, aliens, bullets):
 
         create_fleet(ai_settings, screen, ship, aliens)
         ship.center_ship()
-
+        # todo 0.5 settings
         time.sleep(0.5)
     else:
         stats.game_active = False
@@ -197,7 +205,7 @@ def check_aliens_bottom(ai_settings, screen, stats, sb, ship, aliens, bullets):
             break
 
 
-def update_aliens(ai_settings, screen, stats, sb, ship,  aliens, bullets):
+def update_aliens(ai_settings, screen, stats, sb, ship, aliens, bullets):
     """Update the positions of all aliens in the fleet"""
     check_fleet_edges(ai_settings, aliens)
     aliens.update()
@@ -210,7 +218,7 @@ def update_aliens(ai_settings, screen, stats, sb, ship,  aliens, bullets):
     check_aliens_bottom(ai_settings, screen, stats, sb, ship, aliens, bullets)
 
 
-def update_screen(ai_settings, screen, stats, sb, ship,  aliens, bullets, play_button):
+def update_screen(ai_settings, screen, stats, sb, ship, aliens, bullets, play_button):
     """Update images on the screen and flip to the new screen"""
     # Redraw the screen during each pass through the loop
     screen.fill(ai_settings.bg_color)
