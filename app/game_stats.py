@@ -1,5 +1,5 @@
 import json
-from score import Score
+from app.score import Score
 
 
 class GameStats:
