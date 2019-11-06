@@ -2,8 +2,8 @@ import sys
 import pygame
 import time
 
-from bullet import Bullet
-from alien import Alien
+from app.bullet import Bullet
+from app.alien import Alien
 
 
 def check_events(ai_settings, screen, stats, sb,  play_button, ship, aliens,  bullets):
