@@ -5,11 +5,11 @@ from pygame.sprite import Sprite
 class Alien(Sprite):
     """A class to represent a single alien in the fleet"""
 
-    def __init__(self, ai_settings, screen):
+    def __init__(self, game_settings, screen):
         """Initialize the alien and set it starting position"""
         super(Alien, self).__init__()
         self.screen = screen
-        self.ai_settings = ai_settings
+        self.game_settings = game_settings
 
         # Load the alien image and set its rect attribute
         self.image = pygame.image.load('images/alien.bmp')
@@ -25,15 +25,14 @@ class Alien(Sprite):
     def check_edges(self):
         """Return true if alien is at edge of screen"""
         screen_rect = self.screen.get_rect()
-        if self.rect.right >= screen_rect.right:
+        if self.rect.right >= screen_rect.right or self.rect.left <= 0:
             return True
-        elif self.rect.left <= 0:
-            return True
+        return False
 
     def update(self):
         """Move the alien to the right or left"""
-        self.x += (self.ai_settings.alien_speed_factor *
-                   self.ai_settings.fleet_direction)
+        self.x += (self.game_settings.alien_speed_factor *
+                   self.game_settings.fleet_direction)
         self.rect.x = self.x
 
     def blitme(self):
