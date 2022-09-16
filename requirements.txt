@@ -25,7 +25,7 @@ Jinja2==2.10
 kiwisolver==1.0.1
 liqpay-python3==1.1.1
 lxml==4.2.5
-Mako==1.0.7
+Mako==1.2.2
 MarkupSafe==1.1.0
 matplotlib==3.0.2
 numpy==1.15.4
